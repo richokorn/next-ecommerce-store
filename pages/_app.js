@@ -9,9 +9,8 @@ function MyApp({ Component, pageProps }) {
           body {
             padding: 0;
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-              Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-              sans-serif;
+            font-family: 'Dank Mono', SFMono-Regular, Consolas,
+              'Liberation Mono', Menlo, Courier, monospace;
           }
 
           a {
@@ -53,10 +52,13 @@ function MyApp({ Component, pageProps }) {
 
           /* Set core body defaults */
           body {
-            min-height: 100vh;
+            justify-items: center;
+            min-height: 200vh;
             scroll-behavior: smooth;
             text-rendering: optimizeSpeed;
             line-height: 1;
+            background-color: white;
+            transition: 0.2s ease-in-out;
           }
 
           /* Remove list styles on ul, ol elements with a class attribute */
@@ -100,7 +102,7 @@ function MyApp({ Component, pageProps }) {
           }
         `}
       />
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </>
   );
 }
