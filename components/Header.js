@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
+import { useState } from 'react';
 
 const headerWrapper = css`
   position: fixed;
@@ -66,9 +68,24 @@ const headerRight = css`
   img {
     max-height: 3em;
   }
+
+  .cartCount {
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: rgb(229, 23, 107);
+    width: 1rem;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+  }
 `;
 
 export default function Header() {
+  // Checks for cookie, then adds if not there
+
   return (
     <header>
       <div css={headerWrapper}>
@@ -103,9 +120,21 @@ export default function Header() {
           <Link href="https://upleveled.io/for-employers">
             <a>For Employers</a>
           </Link>
+          <button
+            onClick={() => {
+              Cookies.remove('cart');
+            }}
+          >
+            Delete Cookies
+          </button>
 
           <div>
             <img src="/img/cart.png" alt="" />
+            <div className="cartCount">
+              {isNaN(Cookies.get('cart'))
+                ? Cookies.set('cart', 0)
+                : Cookies.get('cart')}
+            </div>
           </div>
         </div>
       </div>

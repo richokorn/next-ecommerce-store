@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import Cookies from 'js-cookie';
 import Head from 'next/head';
 import Image from 'next/image';
 import Layout from '../components/Layout';
@@ -50,12 +51,55 @@ const productCard = css`
     line-height: 1.5;
     margin-bottom: 1em;
   }
+
+  .rowWrapper {
+    display: flex;
+  }
+
+  .cartButton {
+      width: 50%;
+    }
+  }
 `;
 
 export default function Products(props) {
-  // console.log('props', JSON.stringify(props, null, 2));
+  // Checks for cookie, makes sure it indeed doesn't have any weird shit in there, then adds if not there or is .
+  function firstCookie() {
+    if (
+      parseInt(isNaN(Cookies.get('cart'))) < 0 ||
+      Cookies.get('cart') === false
+    ) {
+      Cookies.set('cart', 0);
+    } else {
+      Cookies.set('cart', 0, {
+        sameSite: 'lax',
+        secure: false,
+        expires: 0.5,
+      });
+    }
+  }
 
-  const addToCart = () => null;
+  firstCookie();
+
+  const addToCart = () => {
+    if (isNaN(Cookies.get('cart'))) {
+      Cookies.set('cart', 0);
+    } else {
+      Cookies.get('cart') >= 0
+        ? Cookies.set('cart', parseInt(Cookies.get('cart')) + 1)
+        : Cookies.set('cart', 0);
+    }
+  };
+
+  const removeFromCart = () => {
+    if (isNaN(Cookies.get('cart'))) {
+      Cookies.set('cart', 0);
+    } else {
+      Cookies.get('cart') > 0
+        ? Cookies.set('cart', parseInt(Cookies.get('cart')) - 1)
+        : Cookies.set('cart', 0);
+    }
+  };
 
   return (
     <div>
@@ -88,9 +132,17 @@ export default function Products(props) {
                 <p className="description2">{product.description2}</p>
                 <hr />
                 <p className="price">{product.priceString}</p>
-                <button onClick={() => addToCart()} css={addToCart}>
-                  Add To Cart
-                </button>
+                <div className="rowWrapper">
+                  <button className="cartButton" onClick={() => addToCart()}>
+                    Add To Cart
+                  </button>
+                  <button
+                    className="cartButton"
+                    onClick={() => removeFromCart()}
+                  >
+                    Remove From Cart
+                  </button>
+                </div>
               </div>
             );
           })}

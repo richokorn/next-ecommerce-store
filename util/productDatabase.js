@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
+// import { readFileSync } from 'node:fs';
 
-console.log(readFileSync('./README.md', 'utf-8'));
+// console.log(readFileSync('./README.md', 'utf-8'));
 
 const productDatabase = [
   {
