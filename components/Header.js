@@ -1,7 +1,5 @@
 import { css } from '@emotion/react';
-import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { useState } from 'react';
 
 const headerWrapper = css`
   position: fixed;
@@ -10,7 +8,7 @@ const headerWrapper = css`
   left: 0;
 
   display: flex;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 3px 0px
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 3px 0px;
   margin: 0;
   width: 100%;
   height: min-content;
@@ -19,7 +17,6 @@ const headerWrapper = css`
   padding-top: 20px;
 
   background-color: rgb(255, 255, 255);
-
 `;
 
 const headerLeft = css`
@@ -70,21 +67,33 @@ const headerRight = css`
   }
 
   .cartCount {
-    text-align: center;
-    justify-content: center;
-    position: absolute;
+    /* pos */
+    position: relative;
     right: 0;
-    top: 0;
+    align-self: center;
+
+    /* box */
+    display: flex;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    line-height: 32px;
+
+    /* aes */
     background: rgb(229, 23, 107);
-    width: 1rem;
     color: white;
     font-weight: bold;
     border-radius: 50%;
   }
+
+  a {
+    display: flex;
+  }
 `;
 
-export default function Header() {
-  // Checks for cookie, then adds if not there
+export default function Header(props) {
+  console.log('Header.js props', props);
+  console.log('Header.js props.cartCount', props.cartCount);
 
   return (
     <header>
@@ -108,7 +117,7 @@ export default function Header() {
           <Link href="/products">
             <a>Merch</a>
           </Link>
-          <Link href="https://upleveled.io/#courses">
+          {/* <Link href="https://upleveled.io/#courses">
             <a>Courses</a>
           </Link>
           <Link href="https://upleveled.io/graduates">
@@ -119,23 +128,20 @@ export default function Header() {
           </Link>
           <Link href="https://upleveled.io/for-employers">
             <a>For Employers</a>
-          </Link>
-          <button
+          </Link> */}
+          {/* <button
             onClick={() => {
               Cookies.remove('cart');
             }}
           >
             Delete Cookies
-          </button>
-
-          <div>
-            <img src="/img/cart.png" alt="" />
-            <div className="cartCount">
-              {isNaN(Cookies.get('cart'))
-                ? Cookies.set('cart', 0)
-                : Cookies.get('cart')}
-            </div>
-          </div>
+          </button> */}
+          <Link href="/checkout">
+            <a>
+              <img src="/img/cart.png" alt="" />
+              <div className="cartCount">{props.cartCount}</div>
+            </a>
+          </Link>
         </div>
       </div>
     </header>

@@ -39,9 +39,9 @@ const pIntro = css`
   }
 `;
 
-export default function Home() {
+export default function Home(props) {
   return (
-    <Layout>
+    <Layout cartCount={props.cartCount}>
       <Head>
         <title>UpMerched</title>
         <meta name="UpMerched" />

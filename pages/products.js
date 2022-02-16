@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import Cookies from 'js-cookie';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useState } from 'react';
 import Layout from '../components/Layout';
 import productDatabase from '../util/productDatabase';
 
@@ -57,53 +58,54 @@ const productCard = css`
   }
 
   .cartButton {
-      width: 50%;
-    }
+    width: 50%;
   }
 `;
 
 export default function Products(props) {
-  // Checks for cookie, makes sure it indeed doesn't have any weird shit in there, then adds if not there or is .
-  function firstCookie() {
-    if (
-      parseInt(isNaN(Cookies.get('cart'))) < 0 ||
-      Cookies.get('cart') === false
-    ) {
-      Cookies.set('cart', 0);
-    } else {
-      Cookies.set('cart', 0, {
-        sameSite: 'lax',
-        secure: false,
-        expires: 0.5,
-      });
-    }
-  }
+  // Lets create a useState variable so we can update the Header with the value we also get from and set to the cookie.
+  const [cartCount, setCartCount] = useState(parseInt(Cookies.get('cart')));
 
-  firstCookie();
-
-  const addToCart = () => {
-    if (isNaN(Cookies.get('cart'))) {
-      Cookies.set('cart', 0);
-    } else {
-      Cookies.get('cart') >= 0
-        ? Cookies.set('cart', parseInt(Cookies.get('cart')) + 1)
-        : Cookies.set('cart', 0);
+  // cookieCheckerSetter checks first for a valid ('cart') cookie, resetting it if it isn't, or adds one that doesn't exist.
+  const cookieCheckerSetter = () => {
+    if (!Cookies.get('cart') || Cookies.get('cart') < 0) {
+      Cookies.set('cart', 0, { SameSite: 'lax', secure: true, expires: 1 });
     }
   };
 
+  // We immediately call it so the browser is initialized with it.
+  cookieCheckerSetter();
+  console.log('cookieCheckerSetter', Cookies.get());
+  console.log("parseInt(Cookies.get('cart'))", parseInt(Cookies.get('cart')));
+  console.log(
+    "typeof parseInt(Cookies.get('cart'))",
+    typeof parseInt(Cookies.get('cart')),
+  );
+
+  console.log('products.js cartCount', cartCount);
+
+  const incrementer = () => (cartCount >= 0 ? cartCount + 1 : cartCount);
+  const decrementer = () => (cartCount > 0 ? cartCount - 1 : cartCount);
+
+  const addToCart = () => {
+    cookieCheckerSetter();
+    parseInt(Cookies.get('cart')) >= 0
+      ? Cookies.set('cart', parseInt(Cookies.get('cart')) + 1)
+      : cookieCheckerSetter();
+    return;
+  };
+
   const removeFromCart = () => {
-    if (isNaN(Cookies.get('cart'))) {
-      Cookies.set('cart', 0);
-    } else {
-      Cookies.get('cart') > 0
-        ? Cookies.set('cart', parseInt(Cookies.get('cart')) - 1)
-        : Cookies.set('cart', 0);
-    }
+    cookieCheckerSetter();
+    parseInt(Cookies.get('cart')) > 0
+      ? Cookies.set('cart', parseInt(Cookies.get('cart')) - 1)
+      : cookieCheckerSetter();
+    return;
   };
 
   return (
     <div>
-      <Layout>
+      <Layout cartCount={cartCount}>
         <Head>
           <title>Products</title>
           <meta description="Products, Prices, Descriptions" />
@@ -133,12 +135,21 @@ export default function Products(props) {
                 <hr />
                 <p className="price">{product.priceString}</p>
                 <div className="rowWrapper">
-                  <button className="cartButton" onClick={() => addToCart()}>
+                  <button
+                    className="cartButton"
+                    onClick={() => {
+                      addToCart();
+                      setCartCount(incrementer);
+                    }}
+                  >
                     Add To Cart
                   </button>
                   <button
                     className="cartButton"
-                    onClick={() => removeFromCart()}
+                    onClick={() => {
+                      removeFromCart();
+                      setCartCount(decrementer);
+                    }}
                   >
                     Remove From Cart
                   </button>
